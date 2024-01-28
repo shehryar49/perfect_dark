@@ -1536,6 +1536,13 @@ Gfx *sightDraw(Gfx *gdl, bool sighton, s32 sight)
 		sight = SIGHT_DEFAULT;
 	}
 
+#ifndef PLATFORM_N64
+	if (g_Vars.currentplayer->bondhealth <= 0.0f) {
+		// Hide crosshair during death animation
+		sight = SIGHT_NONE;
+	}
+#endif
+
 	sightTick(sighton);
 
 	switch (sight) {
