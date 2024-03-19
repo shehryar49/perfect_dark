@@ -67,6 +67,14 @@ struct menuitem g_HtmOptionsMenuItems[] = {
 		MPOPTION_SPAWNWITHWEAPON,
 		menuhandlerMpCheckboxOption,
 	},
+	{
+		MENUITEMTYPE_CHECKBOX,
+		0,
+		MENUITEMFLAG_LOCKABLEMINOR | MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"Friendly Fire",
+		MPOPTION_FRIENDLYFIRE,
+		menuhandlerMpDisplayTeam,
+	},
 #endif
 	{
 		MENUITEMTYPE_CHECKBOX,
