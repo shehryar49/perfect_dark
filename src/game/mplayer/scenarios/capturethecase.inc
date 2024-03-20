@@ -72,8 +72,8 @@ struct menuitem g_CtcOptionsMenuItems[] = {
 	{
 		MENUITEMTYPE_CHECKBOX,
 		0,
-		MENUITEMFLAG_LOCKABLEMINOR | MENUITEMFLAG_LITERAL_TEXT,
-		(uintptr_t)"Friendly Fire",
+		MENUITEMFLAG_LOCKABLEMINOR,
+		L_OPTIONS_257, // "Friendly Fire"
 		MPOPTION_FRIENDLYFIRE,
 		menuhandlerMpDisplayTeam,
 	},
