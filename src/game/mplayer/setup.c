@@ -1167,7 +1167,7 @@ struct menudialogdef g_MpSaveSetupExistsMenuDialog = {
 #ifndef PLATFORM_N64
 MenuItemHandlerResult menuhandlerMpAutoRandomWeapon(s32 operation, struct menuitem *item, union handlerdata *data)
 {
-	const char *labels[] = {
+	static const char *labels[] = {
 		"Off",
 		"Start",
 		"End",
@@ -1182,26 +1182,26 @@ MenuItemHandlerResult menuhandlerMpAutoRandomWeapon(s32 operation, struct menuit
 		}
 		return true;
 	case MENUOP_GETOPTIONCOUNT:
-		data->dropdown.value = 3;
+		data->dropdown.value = ARRAYCOUNT(labels);
 		break;
 	case MENUOP_GETOPTIONTEXT:
 		return (intptr_t)labels[data->dropdown.value];
 	case MENUOP_SET:
 		g_MpSetup.options &= ~(MPOPTION_AUTORANDOMWEAPON_START | MPOPTION_AUTORANDOMWEAPON_END);
 
-		if (data->dropdown.value == 1) {
+		if (data->dropdown.value == AUTORANDOM_START) {
 			g_MpSetup.options |= MPOPTION_AUTORANDOMWEAPON_START;
-		} else if (data->dropdown.value == 2) {
+		} else if (data->dropdown.value == AUTORANDOM_END) {
 			g_MpSetup.options |= MPOPTION_AUTORANDOMWEAPON_END;
 		}
 		break;
 	case MENUOP_GETSELECTEDINDEX:
 		if (g_MpSetup.options & MPOPTION_AUTORANDOMWEAPON_END) {
-			data->dropdown.value = 2;
+			data->dropdown.value = AUTORANDOM_END;
 		} else if (g_MpSetup.options & MPOPTION_AUTORANDOMWEAPON_START) {
-			data->dropdown.value = 1;
+			data->dropdown.value = AUTORANDOM_START;
 		} else {
-			data->dropdown.value = 0;
+			data->dropdown.value = AUTORANDOM_OFF;
 		}
 		break;
 	}

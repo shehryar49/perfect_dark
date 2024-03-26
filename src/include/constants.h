@@ -3804,6 +3804,10 @@
 #define SLOWMOTION_ON    1
 #define SLOWMOTION_SMART 2
 
+#define AUTORANDOM_OFF   0
+#define AUTORANDOM_START 1
+#define AUTORANDOM_END   2
+
 #define SMOKETYPE_NONE             0
 #define SMOKETYPE_ELECTRICAL       1 // Dr Caroll, mainframes in Infiltration bunker
 #define SMOKETYPE_MINI             2 // Phoenix, Laptop sentry
