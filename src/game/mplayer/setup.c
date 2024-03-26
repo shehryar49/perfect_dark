@@ -1189,19 +1189,19 @@ MenuItemHandlerResult menuhandlerMpAutoRandomWeapon(s32 operation, struct menuit
 	case MENUOP_SET:
 		g_MpSetup.options &= ~(MPOPTION_AUTORANDOMWEAPON_START | MPOPTION_AUTORANDOMWEAPON_END);
 
-		if (data->dropdown.value == AUTORANDOM_START) {
+		if (data->dropdown.value == AUTORANDOMWEAPON_START) {
 			g_MpSetup.options |= MPOPTION_AUTORANDOMWEAPON_START;
-		} else if (data->dropdown.value == AUTORANDOM_END) {
+		} else if (data->dropdown.value == AUTORANDOMWEAPON_END) {
 			g_MpSetup.options |= MPOPTION_AUTORANDOMWEAPON_END;
 		}
 		break;
 	case MENUOP_GETSELECTEDINDEX:
 		if (g_MpSetup.options & MPOPTION_AUTORANDOMWEAPON_END) {
-			data->dropdown.value = AUTORANDOM_END;
+			data->dropdown.value = AUTORANDOMWEAPON_END;
 		} else if (g_MpSetup.options & MPOPTION_AUTORANDOMWEAPON_START) {
-			data->dropdown.value = AUTORANDOM_START;
+			data->dropdown.value = AUTORANDOMWEAPON_START;
 		} else {
-			data->dropdown.value = AUTORANDOM_OFF;
+			data->dropdown.value = AUTORANDOMWEAPON_OFF;
 		}
 		break;
 	}
