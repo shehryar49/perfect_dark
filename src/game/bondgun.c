@@ -11781,6 +11781,19 @@ s32 bgunConsiderToggleGunFunction(s32 usedowntime, bool trigpressed, bool fromac
 		g_Vars.currentplayer->hands[HAND_RIGHT].activatesecondary = true;
 		return (extcontrols ? USETIMER_STOP : USETIMER_REPEAT);
 	case WEAPON_RCP120:
+		#ifndef PLATFORM_N64
+		s32 cloaked = (g_Vars.currentplayer->devicesactive & DEVICE_CLOAKRCP120) != 0;
+		// very special alt-button handling for RCP-120's cloaking
+		if (!trigpressed && extcontrols && fromdedicatedbutton) {
+			if (cloaked)  {
+				g_Vars.currentplayer->devicesactive &= ~DEVICE_CLOAKRCP120;
+			} else {
+				g_Vars.currentplayer->devicesactive = (g_Vars.currentplayer->devicesactive & ~DEVICE_CLOAKRCP120) | DEVICE_CLOAKRCP120;
+			}
+			g_Vars.currentplayer->gunctrl.invertgunfunc =  false;
+			return USETIMER_STOP;
+		}
+		#endif
 	case WEAPON_LAPTOPGUN:
 	case WEAPON_DRAGON:
 	case WEAPON_REMOTEMINE:
