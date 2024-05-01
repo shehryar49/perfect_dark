@@ -286,7 +286,12 @@ void currentPlayerZoomIn(f32 fovpersec)
 bool weaponHasFlag(s32 itemid, u32 flag)
 {
 	struct weapon *weapon = weaponFindById(itemid);
-
+#ifndef PLATFORM_N64 //always return, that weapon is dual-wieldable if player sets the cheat. 
+	if (cheatIsActive(CHEAT_DUALWIELDALLGUNS) && (flag == WEAPONFLAG_DUALWIELD))
+	{
+		return true;
+	}
+#endif
 	if (!weapon) {
 		return false;
 	}
