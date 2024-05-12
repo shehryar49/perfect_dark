@@ -23,7 +23,8 @@ enum {
     SHADER_TEXEL1A,
     SHADER_1,
     SHADER_COMBINED,
-    SHADER_NOISE
+    SHADER_NOISE,
+    SHADER_LOD_FRAC,
 };
 
 #define SHADER_OPT_ALPHA (1 << 0)

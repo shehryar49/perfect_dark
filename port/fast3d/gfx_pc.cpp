@@ -33,8 +33,6 @@
 
 uintptr_t gfxFramebuffer;
 
-using namespace std;
-
 #define ALIGN(x, a) (((x) + (a - 1)) & ~(a - 1))
 
 #define SUPPORT_CHECK(x) assert(x)
@@ -85,8 +83,8 @@ struct LoadedVertex {
 
 static struct {
     TextureCacheMap map;
-    list<TextureCacheMapIter> lru;
-    vector<uint32_t> free_texture_ids;
+    std::list<TextureCacheMapIter> lru;
+    std::vector<uint32_t> free_texture_ids;
 } gfx_texture_cache;
 
 struct ColorCombiner {
@@ -97,8 +95,8 @@ struct ColorCombiner {
     uint8_t shader_input_mapping[2][7];
 };
 
-static map<ColorCombinerKey, struct ColorCombiner> color_combiner_pool;
-static map<ColorCombinerKey, struct ColorCombiner>::iterator prev_combiner = color_combiner_pool.end();
+static std::map<ColorCombinerKey, struct ColorCombiner> color_combiner_pool;
+static std::map<ColorCombinerKey, struct ColorCombiner>::iterator prev_combiner = color_combiner_pool.end();
 
 static uint8_t* tex_upload_buffer = nullptr;
 
@@ -223,8 +221,6 @@ static int game_framebuffer_msaa_resolved;
 
 uint32_t gfx_msaa_level = 1;
 
-static bool has_drawn_imgui_menu;
-
 static bool dropped_frame;
 
 static float buf_vbo[MAX_BUFFERED * (32 * 3)]; // 3 vertices in a triangle and 32 floats per vtx
@@ -243,8 +239,8 @@ struct FBInfo {
 };
 
 static bool fbActive = 0;
-static map<int, FBInfo>::iterator active_fb;
-static map<int, FBInfo> framebuffers;
+static std::map<int, FBInfo>::iterator active_fb;
+static std::map<int, FBInfo> framebuffers;
 
 static constexpr float clampf(const float x, const float min, const float max) {
     return (x < min) ? min : (x > max) ? max : x;
@@ -503,7 +499,7 @@ static struct ColorCombiner* gfx_lookup_or_create_color_combiner(const ColorComb
         return &prev_combiner->second;
     }
     gfx_flush();
-    prev_combiner = color_combiner_pool.insert(make_pair(key, ColorCombiner())).first;
+    prev_combiner = color_combiner_pool.insert(std::make_pair(key, ColorCombiner())).first;
     gfx_generate_cc(&prev_combiner->second, key);
     return &prev_combiner->second;
 }
@@ -547,7 +543,7 @@ static bool gfx_texture_cache_lookup(int i, const TextureCacheKey& key) {
         texture_id = gfx_rapi->new_texture();
     }
 
-    it = gfx_texture_cache.map.insert(make_pair(key, TextureCacheValue())).first;
+    it = gfx_texture_cache.map.insert(std::make_pair(key, TextureCacheValue())).first;
     TextureCacheNode* node = &*it;
     node->second.texture_id = texture_id;
     node->second.lru_location = gfx_texture_cache.lru.insert(gfx_texture_cache.lru.end(), { it });
@@ -1377,7 +1373,7 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
                 cms &= ~G_TX_CLAMP;
             }
             if ((cmt & G_TX_CLAMP) && ((cmt & G_TX_MIRROR) || tex_height1 != tex_height2[i])) {
-                tm |= 1 << 2 * i + 1;
+                tm |= 1 << (2 * i + 1);
                 cmt &= ~G_TX_CLAMP;
             }
 
@@ -1478,7 +1474,7 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
             buf_vbo[buf_vbo_len++] = v / tex_height[t];
 
             bool clampS = tm & (1 << 2 * t);
-            bool clampT = tm & (1 << 2 * t + 1);
+            bool clampT = tm & (1 << (2 * t + 1));
 
             if (clampS) {
                 buf_vbo[buf_vbo_len++] = (tex_width2[t] - 0.5f) / tex_width[t];
@@ -2549,7 +2545,7 @@ extern "C" void gfx_init(struct GfxWindowManagerAPI* wapi, struct GfxRenderingAP
 
     if (tex_upload_buffer == nullptr) {
         // We cap texture max to 8k, because why would you need more?
-        int max_tex_size = min(8192, gfx_rapi->get_max_texture_size());
+        int max_tex_size = std::min(8192, gfx_rapi->get_max_texture_size());
         tex_upload_buffer = (uint8_t*)malloc(max_tex_size * max_tex_size * 4);
     }
 
@@ -2689,7 +2685,6 @@ extern "C" void gfx_run(Gfx* commands) {
 
     gfx_rapi->end_frame();
     gfx_wapi->swap_buffers_begin();
-    has_drawn_imgui_menu = false;
 }
 
 extern "C" void gfx_end_frame(void) {
