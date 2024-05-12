@@ -179,6 +179,8 @@ static struct RDP {
     bool textures_changed[2];
 
     uint8_t first_tile_index;
+    uint8_t tex_min_lod;
+    uint8_t tex_max_lod;
 
     uint32_t other_mode_l, other_mode_h;
     uint64_t combine_mode;
@@ -851,7 +853,7 @@ static void import_texture(int i, int tile, bool importReplacement) {
     const uint32_t tex_flags = loaded_texture.tex_flags;
     const uint8_t palette_index = rdp.texture_tile[tile].palette;
 
-    if (rdp.tex_lod || !loaded_texture.addr) {
+    if ((rdp.tex_lod && tile >= rdp.first_tile_index + rdp.tex_detail) || !loaded_texture.addr) {
         // set up miplevel 0; also acts as a catch-all for when .addr is NULL because my texture loader sucks
         loaded_texture.addr = rdp.texture_to_load.addr;
         loaded_texture.line_size_bytes = rdp.texture_tile[tile].line_size_bytes;
@@ -1327,7 +1329,7 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
 
     for (int i = 0; i < 2; i++) {
         // TODO: fix this; for now just ignore smaller mips
-        const uint32_t tile = rdp.first_tile_index + (rdp.tex_lod ? rdp.tex_detail : i);
+        const uint32_t tile = rdp.first_tile_index + ((rdp.tex_lod && !rdp.tex_detail) ? 0 : i);
         if (comb->used_textures[i]) {
             if (rdp.textures_changed[i]) {
                 gfx_flush();
@@ -1432,7 +1434,7 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
             }
 
             // TODO: fix this; for now just ignore smaller mips
-            const uint32_t tile = (rdp.tex_lod ? rdp.tex_detail : t);
+            const uint32_t tile = ((rdp.tex_lod && !rdp.tex_detail) ? 0 : t);
 
             float u = v_arr[i]->u / 32.0f;
             float v = v_arr[i]->v / 32.0f;
@@ -1535,10 +1537,11 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
                     }
                     case G_CCMUX_LOD_FRACTION: {
                         if (rdp.other_mode_h & G_TL_LOD) {
-                            // "Hack" that works for Bowser - Peach painting
-                            float distance_frac = (v1->w - 3000.0f) / 3000.0f;
-                            if (distance_frac < 0.0f) {
-                                distance_frac = 0.0f;
+                            // HACK: very roughly eyeballed based on the carpets in Defection
+                            // this is actually supposed to be calculated per pixel
+                            float distance_frac = (w - 256.0f) / 512.0f;
+                            if (distance_frac < 0.5f) {
+                                distance_frac = 0.5f;
                             }
                             if (distance_frac > 1.0f) {
                                 distance_frac = 1.0f;
@@ -1747,12 +1750,12 @@ static void gfx_sp_moveword(uint8_t index, uint16_t offset, uintptr_t data) {
 static void gfx_sp_texture(uint16_t sc, uint16_t tc, uint8_t level, uint8_t tile, uint8_t on) {
     rsp.texture_scaling_factor.s = sc;
     rsp.texture_scaling_factor.t = tc;
+    rdp.tex_max_lod = level;
     if (rdp.first_tile_index != tile) {
         rdp.textures_changed[0] = true;
         rdp.textures_changed[1] = true;
+        rdp.first_tile_index = tile;
     }
-
-    rdp.first_tile_index = tile;
 }
 
 static void gfx_dp_set_scissor(uint32_t mode, uint32_t ulx, uint32_t uly, uint32_t lrx, uint32_t lry) {
@@ -1964,6 +1967,7 @@ static void gfx_dp_set_env_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 
 static void gfx_dp_set_prim_color(uint8_t m, uint8_t l, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     rdp.prim_lod_fraction = l;
+    rdp.tex_min_lod = m;
     rdp.prim_color.r = r;
     rdp.prim_color.g = g;
     rdp.prim_color.b = b;
