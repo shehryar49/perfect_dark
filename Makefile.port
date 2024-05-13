@@ -168,10 +168,6 @@ else # assume *nix
     # TODO: detect soft/hardfloat abi
     TOOLCHAIN ?= arm-linux-gnueabihf-
   endif
-  # on clang link libc++
-  ifneq (,$(findstring clang,$(CC))$(findstring clang,$(CXX)))
-    TARGET_LDFLAGS += -lc++
-  endif
 endif
 
 # On x86_64 gcc add -m32 to CFLAGS if building a 32-bit executable.
