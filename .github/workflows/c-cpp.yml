@@ -68,8 +68,8 @@ jobs:
         run: |
           mkdir -p bin/data
           cp build/ntsc-final-port/pd.exe bin/pd
-          cp build/pal-final-port/pd.exe bin/pd.pal
-          cp build/jpn-final-port/pd.exe bin/pd.jpn
+          cp build/pal-final-port/pd.pal.exe bin/pd.pal
+          cp build/jpn-final-port/pd.jpn.exe bin/pd.jpn
           touch bin/data/put_your_rom_here.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v4
