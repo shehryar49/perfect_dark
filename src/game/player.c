@@ -2039,6 +2039,12 @@ void playerTickCutscene(bool arg0)
 		g_CutsceneCurTotalFrame60f += g_Vars.lvupdate60freal;
 	}
 
+#ifndef PLATFORM_N64
+	if (arg0 && inputKeyJustPressed(VK_ESCAPE)) {
+		buttons |= START_BUTTON;
+	}
+#endif
+
 #if VERSION >= VERSION_NTSC_1_0
 	if (g_CutsceneCurTotalFrame60f > 30 && (buttons & 0xffffffff)) {
 		g_CutsceneSkipRequested = true;
@@ -3297,6 +3303,12 @@ void playerTick(bool arg0)
 					s8 contpad1 = optionsGetContpadNum1(g_Vars.currentplayerstats->mpindex);
 					u32 buttons = arg0 ? joyGetButtons(contpad1, 0xffffffff) : 0;
 
+#ifndef PLATFORM_N64
+					if (arg0 && inputKeyJustPressed(VK_ESCAPE)) {
+						buttons |= START_BUTTON;
+					}
+#endif
+
 					if (g_Vars.currentplayer->isdead == false
 							&& g_Vars.currentplayer->pausemode == PAUSEMODE_UNPAUSED
 							&& (buttons & START_BUTTON)) {
@@ -3576,6 +3588,12 @@ void playerTick(bool arg0)
 						pause = true;
 					}
 				}
+
+#ifndef PLATFORM_N64
+				if (g_PlayersWithControl[g_Vars.currentplayernum] && inputKeyJustPressed(VK_ESCAPE)) {
+					pause = true;
+				}
+#endif
 
 				if (pause) {
 					if (g_Vars.mplayerisrunning == false) {
