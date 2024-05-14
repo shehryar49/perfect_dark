@@ -510,14 +510,14 @@ s32 invGiveWeaponsByProp(struct prop *prop)
 			weapon = prop->weapon;
 			weaponnum = weapon->weaponnum;
 			otherweaponnum;
+
 #ifndef PLATFORM_N64
-			//This piece of code makes the cheat work in singleplayer. 
-			if (cheatIsActive(CHEAT_DUALWIELDALLGUNS) && !g_Vars.normmplayerisrunning)
-			{
-				if(invHasSingleWeaponExcAllGuns(weaponnum) && (invHasDoubleWeaponExcAllGuns(weapon->weaponnum, weapon->weaponnum)==0))
-				{
-					invGiveDoubleWeapon(weaponnum, weaponnum);
-					numgiven = 2;
+			// always allow picking up a second gun if dual wield cheat is on
+			if (!g_Vars.normmplayerisrunning && cheatIsActive(CHEAT_DUALWIELDALLGUNS)) {
+				if (invHasSingleWeaponExcAllGuns(weaponnum) && !invHasDoubleWeaponExcAllGuns(weaponnum, weaponnum)) {
+					if (invGiveDoubleWeapon(weaponnum, weaponnum)) {
+						return 2;
+					}
 				}
 			}
 #endif
