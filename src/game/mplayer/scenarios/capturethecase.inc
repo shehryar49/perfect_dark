@@ -69,6 +69,14 @@ struct menuitem g_CtcOptionsMenuItems[] = {
 		MPOPTION_SPAWNWITHWEAPON,
 		menuhandlerMpCheckboxOption,
 	},
+	{
+		MENUITEMTYPE_CHECKBOX,
+		0,
+		MENUITEMFLAG_LOCKABLEMINOR | MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"No melee/tranquilizer blur",
+		MPOPTION_NODRUGBLUR,
+		menuhandlerMpCheckboxOption,
+	},
 #endif
 	{
 		MENUITEMTYPE_CHECKBOX,
