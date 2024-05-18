@@ -242,13 +242,6 @@ void schedStartFrame(OSSched *sc)
 	videoStartFrame();
 }
 
-void schedAudioFrame(OSSched *sc)
-{
-	if (!g_SndDisabled) {
-		amgrUpdateFrameCounter(g_Vars.thisframestart240);
-	}
-}
-
 /**
  * Handle a retrace (vsync) event.
  *
@@ -278,7 +271,6 @@ void schedEndFrame(OSSched *sc)
 	joy00014238();
 
 	sndHandleRetrace();
-	schedAudioFrame(sc);
 	schedRenderCrashPeriodically(sc->frameCount);
 	videoEndFrame();
 

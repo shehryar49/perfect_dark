@@ -417,13 +417,6 @@ void amgrUnlock(void)
 	sysMutexUnlock(&g_AmgrMutex);
 }
 
-void amgrUpdateFrameCounter(u32 newframes)
-{
-	amgrLock();
-	g_AmgrFrameTarget = newframes;
-	amgrUnlock();
-}
-
 void *amgrThread(void *arg)
 {
 	const f64 frametime = 1000000.0 / (PAL ? 50.0 : 60.0);

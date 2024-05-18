@@ -114,8 +114,7 @@ void videoEndFrame(void)
 
 	if (endTime >= fpsTime) {
 		char tmp[128];
-		extern u32 g_AmgrFrame;
-		snprintf(tmp, sizeof(tmp), "fps %3u frt %lf frm %u afrm %u", framesPerSec, endTime - startTime, frames, g_AmgrFrame / 4);
+		snprintf(tmp, sizeof(tmp), "fps %3u frt %lf frm %u", framesPerSec, endTime - startTime, frames);
 		wmAPI->set_window_title(tmp);
 		framesPerSec = 0;
 		fpsTime = endTime + 1.0;
