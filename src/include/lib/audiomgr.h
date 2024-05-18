@@ -17,7 +17,12 @@ OSMesgQueue *amgrGetFrameMesgQueue(void);
 void amgrStopThread(void);
 
 #ifndef PLATFORM_N64
-void amgrFrame(void);
+void amgrLock(void);
+void amgrUnlock(void);
+void amgrUpdateFrameCounter(u32 framecount);
+#else
+#define amgrLock() do {} while(0)
+#define amgrUnlock() do {} while(0)
 #endif
 
 #endif
