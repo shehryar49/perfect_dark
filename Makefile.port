@@ -162,7 +162,7 @@ ifneq (,$(findstring windows,$(TARGET_PLATFORM)))
   endif
 else # assume *nix
   TARGET_CFLAGS := $(shell pkg-config sdl2 --cflags-only-I)
-  TARGET_LDFLAGS := $(shell pkg-config sdl2 --libs) -lGL -lz -ldl
+  TARGET_LDFLAGS := $(shell pkg-config sdl2 --libs) -lGLESv2 -lz -ldl
   ifneq (,$(findstring arm,$(TARGET_PLATFORM))$(findstring aarch,$(TARGET_PLATFORM)))
     # linux on arm or aarch64
     # TODO: detect soft/hardfloat abi
